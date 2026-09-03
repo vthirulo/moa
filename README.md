@@ -58,4 +58,18 @@ a == b;  // false
 a != b;  // true
 ```
 
+#### Logical Operators
+
+moa supports logical not (!), logical and (&&), and then logical or (||) operators, where logical not requires one operand and is always a prefix
+
+```C
+!a  // false
+!0  // true
+
+true && false  // false
+true && true   // true
+
+false || true   // true
+false || false  // false
+```
 
