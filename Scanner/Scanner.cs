@@ -75,6 +75,10 @@ namespace Moa
                     }
                     break;
 
+                case '"':
+                    stringLiteral();
+                    break;
+
                 default: Error.report(line, "Unexpected Char - " + c); break;
             }
         }
@@ -104,6 +108,27 @@ namespace Moa
         {
             if (isAtEnd()) return '\0';
             return source[current];
+        }
+
+        private void stringLiteral()
+        {
+            while (peek() != '"' && !isAtEnd())
+            {
+                if (peek() == '\n') line++;
+
+                advance();
+            }
+
+            if (isAtEnd())
+            {
+                Error.report(line, "Unterminated String");
+                return;
+            }
+
+            advance();
+
+            int literal_length = current - start; // includes " and the char after "
+            addToken(TokenType.STRING, source.Substring(start + 1, literal_length - 2));
         }
     }
 }
