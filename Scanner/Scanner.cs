@@ -79,7 +79,16 @@ namespace Moa
                     stringLiteral();
                     break;
 
-                default: Error.report(line, "Unexpected Char - " + c); break;
+                default:
+                    if (isDigit(c))
+                    {
+                        number();
+                    }
+                    else
+                    {
+                        Error.report(line, "Unexpected Char - " + c); break;
+                    }
+                    break;
             }
         }
 
@@ -110,6 +119,12 @@ namespace Moa
             return source[current];
         }
 
+        private char peekNext()
+        {
+            if (current + 1 >= source.Length) return '\0';
+            return source[current + 1];
+        }
+
         private void stringLiteral()
         {
             while (peek() != '"' && !isAtEnd())
@@ -129,6 +144,22 @@ namespace Moa
 
             int literal_length = current - start; // includes " and the char after "
             addToken(TokenType.STRING, source.Substring(start + 1, literal_length - 2));
+        }
+
+        private bool isDigit(char c) => c >= '0' && c <= '9';
+
+        private void number()
+        {
+            while (isDigit(peek())) advance();
+
+            if (peek() == '.' && isDigit(peekNext()))
+            {
+                advance();
+                while (isDigit(peek())) advance();
+            }
+
+            int literal_length = current - start; // includes " and the char after "
+            addToken(TokenType.NUMBER, Double.Parse(source.Substring(start, literal_length)));
         }
     }
 }
