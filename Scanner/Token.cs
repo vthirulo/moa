@@ -36,8 +36,10 @@ enum TokenType
 
     IDENTIFIER, STRING, NUMBER, NULL,
 
-    AND, OR, NOT, IF, ELSE, WHILE, FOR, FUNC,
+    AND, OR, NOT, IF, ELSE, WHILE, VAR, FOR, FUNC,
     PRINT, RETURN,
+
+    TRUE, FALSE,
 
     EOF
 };

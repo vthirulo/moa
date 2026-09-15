@@ -8,9 +8,31 @@ namespace Moa
     {
         private String source;
         private List<Token> tokens = new List<Token>();
+        private static Dictionary<String, TokenType> keywords;
 
         private int start, current;
         private int line;
+
+        static Scanner()
+        {
+            keywords = new Dictionary<string, TokenType>
+            {
+                { "and",    TokenType.AND },
+                { "or",     TokenType.OR },
+                { "not",    TokenType.NOT },
+                { "if",     TokenType.IF },
+                { "else",   TokenType.ELSE },
+                { "while",  TokenType.WHILE },
+                { "for",    TokenType.FOR },
+                { "func",   TokenType.FUNC },
+                { "print",  TokenType.PRINT },
+                { "return", TokenType.RETURN },
+                { "null",   TokenType.NULL },
+                { "var",    TokenType.VAR },
+                { "true",   TokenType.TRUE },
+                { "false",   TokenType.FALSE },
+            };
+        }
 
         public Scanner(String source)
         {
@@ -83,6 +105,10 @@ namespace Moa
                     if (isDigit(c))
                     {
                         number();
+                    }
+                    else if (isAlpha(c))
+                    {
+                        identifier();
                     }
                     else
                     {
@@ -161,6 +187,30 @@ namespace Moa
             int literal_length = current - start; // includes " and the char after "
             addToken(TokenType.NUMBER, Double.Parse(source.Substring(start, literal_length)));
         }
+
+        private bool isAlpha(char c) =>
+            (c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+            (c == '_');
+
+        private bool isAlphaNumeric(char c) => isAlpha(c) || isDigit(c);
+
+        private void identifier()
+        {
+            while (isAlphaNumeric(peek())) advance();
+
+            String identifier = source.Substring(start, current - start);
+
+            TokenType identifier_type;
+
+            if (!keywords.TryGetValue(identifier, out identifier_type))
+            {
+                identifier_type = TokenType.IDENTIFIER;
+            }
+
+            addToken(identifier_type);
+        }
+
     }
 }
 
