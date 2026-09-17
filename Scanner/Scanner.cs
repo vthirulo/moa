@@ -91,6 +91,23 @@ namespace Moa
                     {
                         while (peek() != '\n' && !isAtEnd()) advance();
                     }
+                    else if (match('*'))
+                    {
+                        while (!isAtEnd())
+                        {
+                            if (peek() == '*' && peekNext() == '/')
+                            {
+                                advance(); // *
+                                advance(); // /
+                                break;
+                            }
+                            if (peek() == '\n') line++;
+                            advance();
+
+                            if (isAtEnd()) Error.report(line, "C style comment not terminated");
+                        }
+
+                    }
                     else
                     {
                         addToken(TokenType.SLASH);

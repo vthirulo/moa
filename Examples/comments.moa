@@ -1,0 +1,17 @@
+
+// This is a single line comment
+
+var a = 10; // variable a contains the value 10
+var b = 40; /* This is a C Style comment 
+
+also called as multiline comment */
+
+/* */
+
+/* unterminated 
+comment *
+
+// This is also not valid since above C style
+comment is not terminated
+
+
