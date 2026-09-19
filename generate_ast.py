@@ -24,11 +24,17 @@ def DefineTypes(ast_file, base_class_name:str, class_name:str, fields:str):
 
     FieldList = fields.split(', ')
     for a_field in FieldList:
-        print("\t" + a_field + ";", file=ast_file)
+        print("\tpublic " + a_field + ";", file=ast_file)
 
+    print("\n\tpublic " + class_name + "(" + fields.strip() + ")", file=ast_file)
+    print("\t{", file=ast_file)
+    for a_field in FieldList:
+        identifier = a_field.split(" ")[1]
+        print("\t\tthis." + identifier + " = " + identifier + ";", file=ast_file)
+    print("\t}", file=ast_file)
     print("\n\tpublic override R Accept<R>(IVisitor<R> visitor)", file=ast_file)
     print("\t{", file=ast_file)
-    print("\t\treturn visitor.visit" + class_name + base_class_name + "(this);", file=ast_file)
+    print("\t\treturn visitor.Visit" + class_name + base_class_name + "(this);", file=ast_file)
     print("\t}", file=ast_file)
 
     print("}", file=ast_file)
@@ -39,7 +45,7 @@ def DefineVisitor(ast_file, base_class_name:str, types:list[str]):
 
     for type in types:
         typeName = type.split(':')[0].replace(" ", "")
-        print("\t\tR visit" + typeName + base_class_name + "(" + typeName + " expr);", file=ast_file)
+        print("\t\tR Visit" + typeName + base_class_name + "(" + typeName + " expr);", file=ast_file)
 
     print("\t}", file=ast_file)
 
@@ -53,8 +59,8 @@ else:
     with open(path, mode="w", encoding="utf-8") as ast_file:
         print("\nnamespace Moa;", file=ast_file)
         DefineAST(ast_file, output_dir, "Expression", [
-            "Unary      : Token? _operator, Expression? _right",
-            "Binary     : Expression? _left, Token? _operator, Expression? _right",
-            "Grouping   : Expression? _expr",
-            "Literal    : Object? _value",
+            "Unary      : Token Operator, Expression Right",
+            "Binary     : Expression Left, Token Operator, Expression Right",
+            "Grouping   : Expression Expr",
+            "Literal    : Object? Value",
         ])
