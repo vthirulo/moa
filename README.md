@@ -1,6 +1,6 @@
 # moa
 
-Interpreter written in Sea Sharp (C#)
+Interpreter written in C# for an experimental toy programming language
 
 ## Useful Docs
 
