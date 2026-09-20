@@ -16,27 +16,36 @@ false;
 ""; // empty string
 "13.05"; // it's string
 ```
+> [!NOTE]
+> number types are stored as double-precision floating-point number. So `a = 32` is not an int type, hence we can do this
+> ```C
+> var a = 32;
+> var b = 0.5;
+> var c = a + b; // this is valid - c stores it as 32.5
+> ```
 
 ### Expressions
 
 #### Arithmetic Operators
 
-moa supports addition, subtraction, multiplication and divison for numbers only, but you can use addition symbol to concatenate two or more strings into one
+moa supports addition, subtraction, multiplication and divison for numbers only, but you can use addition symbol 
+- to concatenate two or more strings into one
+- to print other types as a strings
 
 ```C
 
-a = 10;
-b = 5;
-c = 0;
+var a = 10;
+var b = 5;
+var c = 0;
 
 c = a + b; // 15
 c = a - b; // 5
 c = a * b; // 50
 c = a / b; // 2
 
-d = "Pineapple ";
-e = "Honey";
-f = "";
+var d = "Pineapple ";
+var e = "Honey";
+var f = "";
 
 f = d + " and " + e; // "Pineapple  and Honey"
 ```
@@ -74,10 +83,14 @@ false or false  // false
 you can create a variable using the `var` and assign it any value. By default, variable holds `null` value if the variable declared is not assigned a value by the user
 
 ```C
-var count = 0;  // int type
+var count = 0;  // number type
+var fvalue = 3.4;  // number type
 var temp; // null
 var name = "moa language";  // string type
 ```
+
+> [!NOTE]
+> A variable must be declared with `var` before use. Assigning any value to an undeclared name (without var) is an error.
 
 ### Control Flow
 
@@ -118,7 +131,7 @@ for (var count = 1; count <= 5; count = count + 1)
 use the `func` keyword to define a function in moa language, moa doesn't describe between declaration and definition like C language.
 
 ```C
-func incrementor (int x)
+func incrementor (x)
 {
   x = x + 1;
   return x;
@@ -131,7 +144,7 @@ incrementor(3);  // valid, but return value wasted
 
 print incrementor(3);  // prints 4
 
-var val = incrementor(3);  // variable named 'val' holds the value 4 which is for int type
+var val = incrementor(3);  // variable named 'val' holds the value 4
 
 incrementor();  // error 
 ```
