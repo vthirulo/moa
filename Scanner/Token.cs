@@ -3,11 +3,11 @@ namespace Moa;
 
 class Token
 {
-    private TokenType type;
-    private String? lexeme;
-    private Object? literal;
+    public TokenType type;
+    public String lexeme;
+    public Object? literal;
 
-    private int line;
+    public int line;
 
     public Token(TokenType type, String lexeme, Object? literal, int line)
     {

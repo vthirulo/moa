@@ -43,11 +43,17 @@ public class Interpreter
     {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.ScanTokens();
+        Parser parser = new Parser(tokens);
 
-        foreach (Token token in tokens)
+        Expression parsed_expr = parser.Parse();
+
+        if (Error.Status)
         {
-            Console.WriteLine(token.toString());
+            Console.WriteLine("asd");
+            return;
         }
+
+        Console.WriteLine(new AstPrinter().print(parsed_expr));
     }
 
     static void Main(string[] args)
