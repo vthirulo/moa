@@ -1,6 +1,7 @@
 
 /*
 expression     → equality ;
+comma          → equality ((",") equality)* ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
@@ -42,7 +43,21 @@ namespace Moa
 
         private Expression expression()
         {
-            return equality();
+            return comma();
+        }
+
+        private Expression comma()
+        {
+            Expression expr = equality();
+
+            while (_match(TokenType.COMMA))
+            {
+                Token @operator = _previous();
+                Expression right = equality();
+                expr = new Comma(right);
+            }
+
+            return expr;
         }
 
         private Expression equality()

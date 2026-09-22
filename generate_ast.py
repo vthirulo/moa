@@ -59,6 +59,7 @@ else:
     with open(path, mode="w", encoding="utf-8") as ast_file:
         print("\nnamespace Moa;", file=ast_file)
         DefineAST(ast_file, output_dir, "Expression", [
+            "Comma      : Expression Right",
             "Unary      : Token Operator, Expression Right",
             "Binary     : Expression Left, Token Operator, Expression Right",
             "Grouping   : Expression Expr",

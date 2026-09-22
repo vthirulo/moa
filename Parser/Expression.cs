@@ -5,12 +5,29 @@ abstract class Expression
 {
 	public interface IVisitor<R>
 	{
+		R VisitCommaExpression(Comma expr);
 		R VisitUnaryExpression(Unary expr);
 		R VisitBinaryExpression(Binary expr);
 		R VisitGroupingExpression(Grouping expr);
 		R VisitLiteralExpression(Literal expr);
 	}
 	public abstract R Accept<R>(IVisitor<R> visitor);
+}
+
+
+class Comma : Expression
+{
+	public Expression Right;
+
+	public Comma(Expression Right)
+	{
+		this.Right = Right;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitCommaExpression(this);
+	}
 }
 
 

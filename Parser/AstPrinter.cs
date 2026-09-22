@@ -5,6 +5,8 @@ namespace Moa;
 
 class AstPrinter : Expression.IVisitor<String>
 {
+    public string VisitCommaExpression(Comma expr) => parenthesize("comma", expr.Right);
+
     public string VisitBinaryExpression(Binary expr) =>
         parenthesize(
             expr.Operator.lexeme,
@@ -44,4 +46,5 @@ class AstPrinter : Expression.IVisitor<String>
 
         return builder.ToString();
     }
+
 }
