@@ -1,7 +1,7 @@
 ﻿
 namespace Moa;
 
-public class Interpreter
+public class Program
 {
     public static void ReadFile(string filename)
     {
@@ -47,13 +47,9 @@ public class Interpreter
 
         Expression parsed_expr = parser.Parse();
 
-        if (Error.Status)
-        {
-            Console.WriteLine("asd");
-            return;
-        }
+        Interpret interpreter = new Interpret(parsed_expr);
 
-        Console.WriteLine(new AstPrinter().print(parsed_expr));
+        // Console.WriteLine(new AstPrinter().print(parsed_expr));
     }
 
     static void Main(string[] args)
