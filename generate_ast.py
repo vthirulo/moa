@@ -4,19 +4,24 @@ import sys
 
 output_dir:str
 
-def DefineAST(ast_file, output_dir:str, base_class_name:str, types:list[str]):
+def DefineAST(output_dir:str, base_class_name:str, types:list[str]):
 
-    print("\nabstract class " + base_class_name, file=ast_file)
-    print("{", file=ast_file)
-    DefineVisitor(ast_file, base_class_name, types)
-    print("\tpublic abstract R Accept<R>(IVisitor<R> visitor);", file=ast_file)
-    print("}", file=ast_file)
+    path:str = output_dir + base_class_name + ".cs"
 
-    for type in types:
-        in_class_name = type.split(':')[0].replace(" ", "")
-        fields = type.split(":")[1].strip()
-        print("\n", file=ast_file)
-        DefineTypes(ast_file, base_class_name, in_class_name, fields)
+    with open(path, mode="w", encoding="utf-8") as ast_file:
+        print("\nnamespace Moa;", file=ast_file)
+    
+        print("\nabstract class " + base_class_name, file=ast_file)
+        print("{", file=ast_file)
+        DefineVisitor(ast_file, base_class_name, types)
+        print("\tpublic abstract R Accept<R>(IVisitor<R> visitor);", file=ast_file)
+        print("}", file=ast_file)
+
+        for type in types:
+            in_class_name = type.split(':')[0].replace(" ", "")
+            fields = type.split(":")[1].strip()
+            print("\n", file=ast_file)
+            DefineTypes(ast_file, base_class_name, in_class_name, fields)
 
 def DefineTypes(ast_file, base_class_name:str, class_name:str, fields:str):
     print("class " + class_name + " : " + base_class_name, file=ast_file)
@@ -54,14 +59,15 @@ if len(sys.argv) == 1:
 else:
     output_dir = sys.argv[1]
 
-    path:str = output_dir + "Expression" + ".cs"
+    DefineAST(output_dir,"Expression", [
+        "Comma      : Expression Right",
+        "Unary      : Token Operator, Expression Right",
+        "Binary     : Expression Left, Token Operator, Expression Right",
+        "Grouping   : Expression Expr",
+        "Literal    : Object? Value",
+    ])
 
-    with open(path, mode="w", encoding="utf-8") as ast_file:
-        print("\nnamespace Moa;", file=ast_file)
-        DefineAST(ast_file, output_dir, "Expression", [
-            "Comma      : Expression Right",
-            "Unary      : Token Operator, Expression Right",
-            "Binary     : Expression Left, Token Operator, Expression Right",
-            "Grouping   : Expression Expr",
-            "Literal    : Object? Value",
-        ])
+    DefineAST(output_dir, "Statement", [
+        "ExpressionStmt    : Expression Expr",
+        "PrintStmt         : Expression Expr"
+    ])
