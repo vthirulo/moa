@@ -1,4 +1,0 @@
-
-var greeter = "Hello Word !";
-
-print "Holder value is " + holder;

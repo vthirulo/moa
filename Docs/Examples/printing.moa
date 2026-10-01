@@ -1,0 +1,6 @@
+
+
+print "Hello World!";
+print false;
+//var a = 2 + 1;
+print (123 + 5) - 3;
