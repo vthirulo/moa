@@ -1,5 +1,7 @@
 
-namespace Moa;
+namespace Moa.AST;
+
+using Moa.Scanner;
 
 abstract class Expression
 {

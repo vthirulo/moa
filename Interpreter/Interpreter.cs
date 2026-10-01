@@ -1,20 +1,39 @@
 
-namespace Moa;
+namespace Moa.Interpreter;
 
-class Interpret : Expression.IVisitor<Object?>
+using Moa.AST;
+using Moa.Scanner;
+using Moa.Utils.Errors;
+
+class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 {
 
-    public Interpret(Expression expr)
+    public Interpreter(List<Statement> statements)
     {
         try
         {
-            object? value = _evaluate(expr);
-            Console.WriteLine(_value_to_string_conv(value));
+            foreach (Statement stmt in statements)
+            {
+                _execute(stmt);
+            }
         }
         catch (RuntimeException runtime_err)
         {
-            Error.report(runtime_err.token.line, runtime_err.Message);
+            Error.ReportRuntimeError(runtime_err);
         }
+    }
+
+    public object? VisitExpressionStmtStatement(ExpressionStmt expr)
+    {
+        _evaluate(expr.Expr);
+        return null;
+    }
+
+    public object? VisitPrintStmtStatement(PrintStmt expr)
+    {
+        Object? value = _evaluate(expr.Expr);
+        Console.WriteLine(_value_to_string_conv(value));
+        return null;
     }
 
     public object? VisitLiteralExpression(Literal expr)
@@ -100,6 +119,8 @@ class Interpret : Expression.IVisitor<Object?>
         throw new NotImplementedException();
     }
 
+    private object? _execute(Statement stmt) => stmt.Accept(this);
+
     private object? _evaluate(Expression expr) => expr.Accept(this);
 
     private bool _isTruthness(object? value)
@@ -138,7 +159,7 @@ class Interpret : Expression.IVisitor<Object?>
 
         if (value is double)
         {
-            string text = value.ToString();
+            string? text = value.ToString();
 
             if (text.EndsWith(".0")) text = text.Substring(0, text.Length - 2);
 

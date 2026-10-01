@@ -1,7 +1,8 @@
 
-using System.Text;
+namespace Moa.Utils;
 
-namespace Moa;
+using Moa.AST;
+using System.Text;
 
 class AstPrinter : Expression.IVisitor<String>
 {

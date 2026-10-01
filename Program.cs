@@ -1,5 +1,10 @@
 ﻿
-namespace Moa;
+using Moa.AST;
+using Moa.Utils.Errors;
+
+using MoaScanner = Moa.Scanner.Scanner;
+using MoaParser = Moa.Parser.Parser;
+using MoaInterpreter = Moa.Interpreter.Interpreter;
 
 public class Program
 {
@@ -41,15 +46,17 @@ public class Program
 
     private static void Run(string source)
     {
-        Scanner scanner = new Scanner(source);
-        List<Token> tokens = scanner.ScanTokens();
-        Parser parser = new Parser(tokens);
+        MoaScanner scanner = new(source);
+        List<Moa.Scanner.Token> tokens = scanner.ScanTokens();
+        MoaParser parser = new(tokens);
 
-        Expression parsed_expr = parser.Parse();
+        List<Statement> lst_of_statements = parser.Parse();
 
-        Interpret interpreter = new Interpret(parsed_expr);
+        if (Error.Status) Environment.Exit(65);
 
-        // Console.WriteLine(new AstPrinter().print(parsed_expr));
+        MoaInterpreter interpreter = new(lst_of_statements);
+
+        if (Error.RuntimeStatus) Environment.Exit(70);
     }
 
     static void Main(string[] args)

@@ -1,26 +1,13 @@
 
-namespace Moa;
+namespace Moa.Scanner;
 
-class Token
+class Token(TokenType type, String lexeme, Object? literal, int line)
 {
-    public TokenType type;
-    public String lexeme;
-    public Object? literal;
+    public TokenType type = type;
+    public String lexeme = lexeme;
+    public Object? literal = literal;
 
-    public int line;
-
-    public Token(TokenType type, String lexeme, Object? literal, int line)
-    {
-        this.type = type;
-        this.lexeme = lexeme;
-        this.literal = literal;
-        this.line = line;
-    }
-
-    public String toString()
-    {
-        return "TYPE - " + type + " | Lexeme - " + lexeme + " | Literal - " + literal;
-    }
+    public int line = line;
 }
 
 
