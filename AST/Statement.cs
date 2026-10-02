@@ -9,6 +9,7 @@ abstract class Statement
 	{
 		R VisitExpressionStmtStatement(ExpressionStmt expr);
 		R VisitPrintStmtStatement(PrintStmt expr);
+		R VisitVarStmtStatement(VarStmt expr);
 	}
 	public abstract R Accept<R>(IVisitor<R> visitor);
 }
@@ -42,5 +43,23 @@ class PrintStmt : Statement
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitPrintStmtStatement(this);
+	}
+}
+
+
+class VarStmt : Statement
+{
+	public Token Operator;
+	public Expression? initializer;
+
+	public VarStmt(Token Operator, Expression? initializer)
+	{
+		this.Operator = Operator;
+		this.initializer = initializer;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitVarStmtStatement(this);
 	}
 }

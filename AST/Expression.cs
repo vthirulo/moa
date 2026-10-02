@@ -12,6 +12,7 @@ abstract class Expression
 		R VisitBinaryExpression(Binary expr);
 		R VisitGroupingExpression(Grouping expr);
 		R VisitLiteralExpression(Literal expr);
+		R VisitVariableExpression(Variable expr);
 	}
 	public abstract R Accept<R>(IVisitor<R> visitor);
 }
@@ -99,5 +100,21 @@ class Literal : Expression
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitLiteralExpression(this);
+	}
+}
+
+
+class Variable : Expression
+{
+	public Token Name;
+
+	public Variable(Token Name)
+	{
+		this.Name = Name;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitVariableExpression(this);
 	}
 }

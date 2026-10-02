@@ -169,4 +169,13 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         return value.ToString();
     }
 
+    public object? VisitVariableExpression(Variable expr)
+    {
+        throw new NotImplementedException();
+    }
+
+    public object? VisitVarStmtStatement(VarStmt expr)
+    {
+        throw new NotImplementedException();
+    }
 }

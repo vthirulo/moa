@@ -27,10 +27,40 @@ class Parser
 
         while (!_isEOF())
         {
-            statements.Add(_statement());
+            statements.Add(_declaration());
         }
 
         return statements;
+    }
+
+    private Statement _declaration()
+    {
+        try
+        {
+            if (_match(TokenType.VAR)) return _varDeclaration();
+
+            return _statement();
+        }
+        catch (ParseError)
+        {
+            _synchronize();
+            return null;
+        }
+    }
+
+    private Statement _varDeclaration()
+    {
+        Token Name = _consume(TokenType.IDENTIFIER, "Expect variable name");
+
+        Expression? initializer = null;
+
+        if (_match(TokenType.EQUAL))
+        {
+            initializer = _expression();
+        }
+
+        _consume(TokenType.SEMICOLON, "Expect ';' after variable declaration");
+        return new VarStmt(Name, initializer);
     }
 
     private Statement _statement()
@@ -157,6 +187,8 @@ class Parser
             return new Literal(_previous().literal);
         }
 
+        if (_match(TokenType.IDENTIFIER)) return new Variable(_previous());
+
         if (_match(TokenType.LEFT_PAREN))
         {
             Expression expr = _expression();
@@ -216,5 +248,30 @@ class Parser
     private Token _peek() => tokens[current];
 
     private Token _previous() => tokens[current - 1];
+
+    private void _synchronize()
+    {
+        _advance();
+
+        while (!_isEOF())
+        {
+            if (_previous().type == TokenType.SEMICOLON) return;
+
+            switch (_peek().type)
+            {
+                case TokenType.IF:
+                case TokenType.ELSE:
+                case TokenType.FOR:
+                case TokenType.WHILE:
+                case TokenType.PRINT:
+                case TokenType.VAR:
+                case TokenType.FUNC:
+                case TokenType.RETURN:
+                    return;
+            }
+
+            _advance();
+        }
+    }
 
 }
