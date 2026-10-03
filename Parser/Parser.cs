@@ -70,7 +70,25 @@ class Parser
     {
         if (_match(TokenType.PRINT)) return _printStatement();
 
+        if (_match(TokenType.LEFT_BRACE)) return new Block(_block());
+
         return _expressionStatement();
+    }
+
+    private List<Statement> _block()
+    {
+        List<Statement> statements = [];
+
+        while (!_check(TokenType.RIGHT_BRACE) && !_isEOF())
+        {
+            if (_declaration() is Statement stmt)
+            {
+                statements.Add(stmt);
+            }
+        }
+
+        _consume(TokenType.RIGHT_BRACE, "Expect '}' after block");
+        return statements;
     }
 
     private Statement _printStatement()

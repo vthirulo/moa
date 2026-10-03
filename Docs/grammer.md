@@ -9,7 +9,8 @@ program        -> declaration* EOF ;
 declaration    -> varDeclaration | statement ;
 varDeclaration -> "var" IDENTIFIER ( "=" expression )? ";" ;
 
-statement      -> exprStatement | printStatement ;
+statement      -> exprStatement | printStatement | block ;
+block          -> "{" declaration* "}" ;
 exprStatement  -> expression ";" ;
 printStatement -> "print" expression ";" ;
 

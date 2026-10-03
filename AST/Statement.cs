@@ -7,11 +7,28 @@ abstract class Statement
 {
 	public interface IVisitor<R>
 	{
+		R VisitBlockStatement(Block expr);
 		R VisitExpressionStmtStatement(ExpressionStmt expr);
 		R VisitPrintStmtStatement(PrintStmt expr);
 		R VisitVarStmtStatement(VarStmt expr);
 	}
 	public abstract R Accept<R>(IVisitor<R> visitor);
+}
+
+
+class Block : Statement
+{
+	public List<Statement> Statements;
+
+	public Block(List<Statement> Statements)
+	{
+		this.Statements = Statements;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitBlockStatement(this);
+	}
 }
 
 

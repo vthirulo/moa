@@ -62,7 +62,7 @@ else:
 
     DefineAST(output_dir,"Expression", [
         "Comma      : Expression Right",
-        "Assign     : Token Name, Expression? Value",
+        "Assign     : Token Name, Expression Value",
         "Unary      : Token Operator, Expression Right",
         "Binary     : Expression Left, Token Operator, Expression Right",
         "Grouping   : Expression Expr",
@@ -71,6 +71,7 @@ else:
     ])
 
     DefineAST(output_dir, "Statement", [
+        "Block             : List<Statement> Statements",
         "ExpressionStmt    : Expression Expr",
         "PrintStmt         : Expression Expr",
         "VarStmt           : Token Name, Expression? Initializer"

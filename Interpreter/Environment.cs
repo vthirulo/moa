@@ -7,6 +7,11 @@ namespace Moa.Interpreter;
 class Environment
 {
     private Dictionary<string, object?> _values = [];
+    private Environment? _enclosing;
+
+    public Environment() => _enclosing = null;
+
+    public Environment(Environment enclosing) => _enclosing = enclosing;
 
     public void Define(string name, object? value)
     {
@@ -21,6 +26,12 @@ class Environment
             return;
         }
 
+        if (_enclosing is not null)
+        {
+            _enclosing.Assign(name, value);
+            return;
+        }
+
         throw new RuntimeException(name, "Undefined variable '" + name.lexeme + "'");
     }
 
@@ -30,6 +41,8 @@ class Environment
         {
             return _values[name.lexeme];
         }
+
+        if (_enclosing is not null) return _enclosing.Get(name);
 
         throw new RuntimeException(name, "Undefined variable '" + name.lexeme + "'");
     }

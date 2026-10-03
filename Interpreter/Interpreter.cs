@@ -24,6 +24,12 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         }
     }
 
+    public object? VisitBlockStatement(Block block)
+    {
+        _executeBlock(block.Statements, new Environment(_env));
+        return null;
+    }
+
     public object? VisitExpressionStmtStatement(ExpressionStmt expr)
     {
         _evaluate(expr.Expr);
@@ -133,6 +139,25 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
     public object? VisitCommaExpression(Comma expr)
     {
         throw new NotImplementedException();
+    }
+
+    private void _executeBlock(List<Statement> statements, Environment environment)
+    {
+        Environment _previous = this._env;
+
+        try
+        {
+            this._env = environment;
+
+            foreach (Statement stmt in statements)
+            {
+                _execute(stmt);
+            }
+        }
+        finally
+        {
+            this._env = _previous;
+        }
     }
 
     private object? _execute(Statement stmt) => stmt.Accept(this);
