@@ -17,7 +17,7 @@ class Error
 
     public static void ReportRuntimeError(RuntimeException err)
     {
-        Console.Error.WriteLine("[line" + err.token.line + "]", err.Message);
+        Console.Error.WriteLine("[line " + err.token.line + "] " + err.Message);
         _hadRuntimeError = true;
     }
 

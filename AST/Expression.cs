@@ -8,6 +8,7 @@ abstract class Expression
 	public interface IVisitor<R>
 	{
 		R VisitCommaExpression(Comma expr);
+		R VisitAssignExpression(Assign expr);
 		R VisitUnaryExpression(Unary expr);
 		R VisitBinaryExpression(Binary expr);
 		R VisitGroupingExpression(Grouping expr);
@@ -30,6 +31,24 @@ class Comma : Expression
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitCommaExpression(this);
+	}
+}
+
+
+class Assign : Expression
+{
+	public Token Name;
+	public Expression? Value;
+
+	public Assign(Token Name, Expression? Value)
+	{
+		this.Name = Name;
+		this.Value = Value;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitAssignExpression(this);
 	}
 }
 

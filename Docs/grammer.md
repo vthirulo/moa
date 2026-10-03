@@ -13,7 +13,8 @@ statement      -> exprStatement | printStatement ;
 exprStatement  -> expression ";" ;
 printStatement -> "print" expression ";" ;
 
-expression     → equality ;
+expression     → assignment ;
+assignment     → IDENTIFIER "=" assignment | comma ;
 comma          → equality ((",") _equality)* ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) _term )* ;

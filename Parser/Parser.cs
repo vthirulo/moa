@@ -88,7 +88,28 @@ class Parser
 
     private Expression _expression()
     {
-        return _comma();
+        return _assignment();
+    }
+
+    private Expression _assignment()
+    {
+        Expression expr = _equality();
+
+        if (_match(TokenType.EQUAL))
+        {
+            Token equal_to = _previous();
+            Expression value = _assignment();
+
+            if (expr is Variable target_var)
+            {
+                Token Name = target_var.Name;
+                return new Assign(Name, value);
+            }
+
+            Error.Report(equal_to.line, "Invalid assignment target");
+        }
+
+        return expr;
     }
 
     private Expression _comma()

@@ -49,13 +49,13 @@ class PrintStmt : Statement
 
 class VarStmt : Statement
 {
-	public Token Operator;
-	public Expression? initializer;
+	public Token Name;
+	public Expression? Initializer;
 
-	public VarStmt(Token Operator, Expression? initializer)
+	public VarStmt(Token Name, Expression? Initializer)
 	{
-		this.Operator = Operator;
-		this.initializer = initializer;
+		this.Name = Name;
+		this.Initializer = Initializer;
 	}
 
 	public override R Accept<R>(IVisitor<R> visitor)

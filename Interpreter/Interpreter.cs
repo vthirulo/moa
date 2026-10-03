@@ -7,6 +7,7 @@ using Moa.Utils.Errors;
 
 class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 {
+    private Environment _env = new();
 
     public Interpreter(List<Statement> statements)
     {
@@ -36,14 +37,30 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         return null;
     }
 
-    public object? VisitLiteralExpression(Literal expr)
+    public object? VisitVarStmtStatement(VarStmt expr)
     {
-        return expr.Value;
+        object? value = null;
+
+        if (expr.Initializer != null)
+        {
+            value = _evaluate(expr.Initializer);
+        }
+
+        _env.Define(expr.Name.lexeme, value);
+        return value;
     }
 
-    public object? VisitGroupingExpression(Grouping expr)
+    public object? VisitVariableExpression(Variable expr) => _env.Get(expr.Name);
+
+    public object? VisitLiteralExpression(Literal expr) => expr.Value;
+
+    public object? VisitGroupingExpression(Grouping expr) => _evaluate(expr.Expr);
+
+    public object? VisitAssignExpression(Assign expr)
     {
-        return _evaluate(expr.Expr);
+        object? value = _evaluate(expr.Value);
+        _env.Assign(expr.Name, value);
+        return value;
     }
 
     public object? VisitUnaryExpression(Unary expr)
@@ -70,10 +87,9 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         switch (expr.Operator.type)
         {
             case TokenType.PLUS:
-                if (left is string && right is string)
+                if (left is string vleft && right is string vright)
                 {
-                    _checkOperandsNumber(expr.Operator, left, right);
-                    return (left == null || right == null) ? null : (string)left + (string)right;
+                    return vleft + vright;
                 }
                 else if (left is double && right is double)
                 {
@@ -169,13 +185,4 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         return value.ToString();
     }
 
-    public object? VisitVariableExpression(Variable expr)
-    {
-        throw new NotImplementedException();
-    }
-
-    public object? VisitVarStmtStatement(VarStmt expr)
-    {
-        throw new NotImplementedException();
-    }
 }

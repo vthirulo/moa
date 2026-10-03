@@ -1,6 +1,18 @@
 
 
-print "Hello World!";
-print false;
-//var a = 2 + 1;
-print (123 + 5) - 3;
+var a = "Hello";
+var b = "World";
+
+print a + " " + b;
+
+b = "Everyone !";
+
+print (a + " " + b);
+
+var c4;
+
+print (c * 10); // undefined variable 
+
+c = 41;
+
+print (c);

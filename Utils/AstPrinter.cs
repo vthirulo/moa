@@ -48,4 +48,13 @@ class AstPrinter : Expression.IVisitor<String>
         return builder.ToString();
     }
 
+    public string VisitVariableExpression(Variable expr)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string VisitAssignExpression(Assign expr)
+    {
+        throw new NotImplementedException();
+    }
 }
