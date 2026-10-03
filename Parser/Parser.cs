@@ -27,13 +27,16 @@ class Parser
 
         while (!_isEOF())
         {
-            statements.Add(_declaration());
+            if (_declaration() is Statement stmt)
+            {
+                statements.Add(stmt);
+            }
         }
 
         return statements;
     }
 
-    private Statement _declaration()
+    private Statement? _declaration()
     {
         try
         {

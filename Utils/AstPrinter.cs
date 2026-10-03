@@ -21,7 +21,7 @@ class AstPrinter : Expression.IVisitor<String>
             expr.Expr
         );
 
-    public string VisitLiteralExpression(Literal expr) => expr.Value == null ? "null" : expr.Value.ToString();
+    public string VisitLiteralExpression(Literal expr) => expr.Value?.ToString() ?? "null";
 
     public string VisitUnaryExpression(Unary expr) =>
         parenthesize(

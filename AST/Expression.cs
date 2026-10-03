@@ -38,9 +38,9 @@ class Comma : Expression
 class Assign : Expression
 {
 	public Token Name;
-	public Expression? Value;
+	public Expression Value;
 
-	public Assign(Token Name, Expression? Value)
+	public Assign(Token Name, Expression Value)
 	{
 		this.Name = Name;
 		this.Value = Value;

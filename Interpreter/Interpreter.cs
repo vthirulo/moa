@@ -169,13 +169,13 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         throw new RuntimeException(@operator, "Operands must be a number !");
     }
 
-    private string _value_to_string_conv(object? value)
+    private string? _value_to_string_conv(object? value)
     {
         if (value == null) return "null";
 
         if (value is double)
         {
-            string? text = value.ToString();
+            string text = value.ToString() ?? "null";
 
             if (text.EndsWith(".0")) text = text.Substring(0, text.Length - 2);
 
