@@ -39,6 +39,10 @@ class Environment
     {
         if (_values.ContainsKey(name.lexeme))
         {
+            if (_values[name.lexeme] is null) throw new RuntimeException(
+                name, "Accessing an uninitialized variable '" + name.lexeme + "' is forbidden !"
+            );
+
             return _values[name.lexeme];
         }
 
