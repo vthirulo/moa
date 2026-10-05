@@ -1,7 +1,7 @@
 
-namespace Moa.Utils;
+namespace Moa.TreeWalk.Utils;
 
-using Moa.AST;
+using Moa.TreeWalk.AST;
 using System.Text;
 
 class AstPrinter : Expression.IVisitor<String>

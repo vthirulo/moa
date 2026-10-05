@@ -1,8 +1,7 @@
 
-using Moa.Scanner;
-using Moa.Utils.Errors;
+namespace Moa.TreeWalk;
 
-namespace Moa.Interpreter;
+using Moa.TreeWalk.Utils.Errors;
 
 class Environment
 {

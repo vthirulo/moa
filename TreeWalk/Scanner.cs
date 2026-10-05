@@ -1,7 +1,7 @@
 
-namespace Moa.Scanner;
+namespace Moa.TreeWalk;
 
-using Moa.Utils.Errors;
+using Moa.TreeWalk.Utils.Errors;
 
 class Scanner
 {

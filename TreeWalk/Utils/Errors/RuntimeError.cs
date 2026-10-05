@@ -1,8 +1,8 @@
 
 
-namespace Moa.Utils.Errors;
+namespace Moa.TreeWalk.Utils.Errors;
 
-using Moa.Scanner;
+using Moa.TreeWalk;
 
 class RuntimeException(Token token, String message) : SystemException(message)
 {

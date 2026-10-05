@@ -1,9 +1,8 @@
 
-namespace Moa.Parser;
+namespace Moa.TreeWalk;
 
-using Moa.AST;
-using Moa.Scanner;
-using Moa.Utils.Errors;
+using Moa.TreeWalk.AST;
+using Moa.TreeWalk.Utils.Errors;
 
 class ParseError : SystemException
 {

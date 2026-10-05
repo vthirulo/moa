@@ -1,5 +1,5 @@
 
-namespace Moa.Scanner;
+namespace Moa.TreeWalk;
 
 class Token(TokenType type, String lexeme, Object? literal, int line)
 {

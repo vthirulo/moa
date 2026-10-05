@@ -1,7 +1,7 @@
 
-namespace Moa.AST;
+namespace Moa.TreeWalk.AST;
 
-using Moa.Scanner;
+using Moa.TreeWalk;
 
 abstract class Expression
 {

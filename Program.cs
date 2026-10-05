@@ -1,10 +1,10 @@
 ﻿
-using Moa.AST;
-using Moa.Utils.Errors;
+using Moa.TreeWalk.AST;
+using Moa.TreeWalk.Utils.Errors;
 
-using MoaScanner = Moa.Scanner.Scanner;
-using MoaParser = Moa.Parser.Parser;
-using MoaInterpreter = Moa.Interpreter.Interpreter;
+using MoaScanner = Moa.TreeWalk.Scanner;
+using MoaParser = Moa.TreeWalk.Parser;
+using MoaInterpreter = Moa.TreeWalk.Interpreter;
 
 public class Program
 {
@@ -15,7 +15,7 @@ public class Program
             if (filename[^4..] != ".moa")
             {
                 Console.WriteLine("This is not a moa file !");
-                Environment.Exit(-1);
+                System.Environment.Exit(-1);
             }
 
             using var fstream = new FileStream(filename, FileMode.Open);
@@ -23,7 +23,7 @@ public class Program
         catch (FileNotFoundException)
         {
             Console.WriteLine("moa file not found !");
-            Environment.Exit(-1);
+            System.Environment.Exit(-1);
         }
 
         Console.WriteLine("Reading " + filename + "...");
@@ -47,7 +47,7 @@ public class Program
     private static void Run(string source)
     {
         MoaScanner scanner = new(source);
-        List<Moa.Scanner.Token> tokens = scanner.ScanTokens();
+        List<Moa.TreeWalk.Token> tokens = scanner.ScanTokens();
         MoaParser parser = new(tokens);
 
         List<Statement> lst_of_statements = parser.Parse();

@@ -1,5 +1,5 @@
 
-namespace Moa.Utils.Errors;
+namespace Moa.TreeWalk.Utils.Errors;
 
 class Error
 {

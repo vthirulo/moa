@@ -1,18 +1,9 @@
 
 
-var a = "Hello";
-var b = "World";
+var a = "Hello", b = "World";
 
 print a + " " + b;
 
 b = "Everyone !";
 
 print (a + " " + b);
-
-var c4;
-
-print (c * 10); // undefined variable 
-
-c = 41;
-
-print (c);
