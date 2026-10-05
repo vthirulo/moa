@@ -1,0 +1,18 @@
+
+var a = 5;
+
+var b = 5;
+
+if (a < b) {
+    print "a is less than b";
+}
+else if (a == b) {
+    print "a is equal to b";
+}
+else {
+    print "a is greater than b";
+}
+
+
+print "hi" or 3;
+print null or "yes";

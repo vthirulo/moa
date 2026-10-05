@@ -10,6 +10,7 @@ abstract class Expression
 		R VisitCommaExpression(Comma expr);
 		R VisitAssignExpression(Assign expr);
 		R VisitUnaryExpression(Unary expr);
+		R VisitLogicalExpression(Logical expr);
 		R VisitBinaryExpression(Binary expr);
 		R VisitGroupingExpression(Grouping expr);
 		R VisitLiteralExpression(Literal expr);
@@ -67,6 +68,26 @@ class Unary : Expression
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitUnaryExpression(this);
+	}
+}
+
+
+class Logical : Expression
+{
+	public Expression Left;
+	public Token Operator;
+	public Expression Right;
+
+	public Logical(Expression Left, Token Operator, Expression Right)
+	{
+		this.Left = Left;
+		this.Operator = Operator;
+		this.Right = Right;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitLogicalExpression(this);
 	}
 }
 

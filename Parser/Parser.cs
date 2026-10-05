@@ -68,6 +68,8 @@ class Parser
 
     private Statement _statement()
     {
+        if (_match(TokenType.IF)) return _ifStatement();
+
         if (_match(TokenType.PRINT)) return _printStatement();
 
         if (_match(TokenType.LEFT_BRACE)) return new Block(_block());
@@ -89,6 +91,22 @@ class Parser
 
         _consume(TokenType.RIGHT_BRACE, "Expect '}' after block");
         return statements;
+    }
+
+    private Statement _ifStatement()
+    {
+        _consume(TokenType.LEFT_PAREN, "Expect '(' after if keyword");
+        Expression condition = _expression();
+        _consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition");
+
+        Statement thenBranch = _statement();
+        Statement? elseBranch = null;
+        if (_match(TokenType.ELSE))
+        {
+            elseBranch = _statement();
+        }
+
+        return new IfStmt(condition, thenBranch, elseBranch);
     }
 
     private Statement _printStatement()
@@ -114,7 +132,7 @@ class Parser
 
     private Expression _assignment()
     {
-        Expression expr = _equality();
+        Expression expr = _or();
 
         if (_match(TokenType.EQUAL))
         {
@@ -142,6 +160,36 @@ class Parser
             Token @operator = _previous();
             Expression right = _equality();
             expr = new Comma(right);
+        }
+
+        return expr;
+    }
+
+    private Expression _or()
+    {
+        Expression expr = _and();
+
+        while (_match(TokenType.OR))
+        {
+            Token @operator = _previous();
+            Expression right = _and();
+
+            expr = new Logical(expr, @operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expression _and()
+    {
+        Expression expr = _equality();
+
+        while (_match(TokenType.AND))
+        {
+            Token @operator = _previous();
+            Expression right = _equality();
+
+            expr = new Logical(expr, @operator, right);
         }
 
         return expr;

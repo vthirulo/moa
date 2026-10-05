@@ -64,6 +64,7 @@ else:
         "Comma      : Expression Right",
         "Assign     : Token Name, Expression Value",
         "Unary      : Token Operator, Expression Right",
+        "Logical    : Expression Left, Token Operator, Expression Right",
         "Binary     : Expression Left, Token Operator, Expression Right",
         "Grouping   : Expression Expr",
         "Literal    : Object? Value",
@@ -72,6 +73,7 @@ else:
 
     DefineAST(output_dir, "Statement", [
         "Block             : List<Statement> Statements",
+        "IfStmt            : Expression Condition, Statement ThenBranch, Statement? ElseBranch",
         "ExpressionStmt    : Expression Expr",
         "PrintStmt         : Expression Expr",
         "VarStmt           : Token Name, Expression? Initializer"

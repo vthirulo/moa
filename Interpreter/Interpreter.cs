@@ -30,6 +30,20 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         return null;
     }
 
+    public object? VisitIfStmtStatement(IfStmt ifStmt)
+    {
+        if (_isTruthness(_evaluate(ifStmt.Condition)))
+        {
+            _execute(ifStmt.ThenBranch);
+        }
+        else if (ifStmt.ElseBranch != null)
+        {
+            _execute(ifStmt.ElseBranch);
+        }
+
+        return null;
+    }
+
     public object? VisitExpressionStmtStatement(ExpressionStmt expr)
     {
         _evaluate(expr.Expr);
@@ -67,6 +81,22 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         object? value = _evaluate(expr.Value);
         _env.Assign(expr.Name, value);
         return value;
+    }
+
+    public object? VisitLogicalExpression(Logical expr)
+    {
+        object? left = _evaluate(expr.Left);
+
+        if (expr.Operator.type == TokenType.OR)
+        {
+            if (_isTruthness(left)) return left;
+        }
+        else
+        {
+            if (!_isTruthness(left)) return left;
+        }
+
+        return _evaluate(expr.Right);
     }
 
     public object? VisitUnaryExpression(Unary expr)

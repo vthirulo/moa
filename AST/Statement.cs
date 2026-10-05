@@ -8,6 +8,7 @@ abstract class Statement
 	public interface IVisitor<R>
 	{
 		R VisitBlockStatement(Block expr);
+		R VisitIfStmtStatement(IfStmt expr);
 		R VisitExpressionStmtStatement(ExpressionStmt expr);
 		R VisitPrintStmtStatement(PrintStmt expr);
 		R VisitVarStmtStatement(VarStmt expr);
@@ -28,6 +29,26 @@ class Block : Statement
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitBlockStatement(this);
+	}
+}
+
+
+class IfStmt : Statement
+{
+	public Expression Condition;
+	public Statement ThenBranch;
+	public Statement? ElseBranch;
+
+	public IfStmt(Expression Condition, Statement ThenBranch, Statement? ElseBranch)
+	{
+		this.Condition = Condition;
+		this.ThenBranch = ThenBranch;
+		this.ElseBranch = ElseBranch;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitIfStmtStatement(this);
 	}
 }
 

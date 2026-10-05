@@ -57,4 +57,9 @@ class AstPrinter : Expression.IVisitor<String>
     {
         throw new NotImplementedException();
     }
+
+    public string VisitLogicalExpression(Logical expr)
+    {
+        throw new NotImplementedException();
+    }
 }
