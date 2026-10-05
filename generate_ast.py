@@ -9,8 +9,8 @@ def DefineAST(output_dir:str, base_class_name:str, types:list[str]):
     path:str = output_dir + base_class_name + ".cs"
 
     with open(path, mode="w", encoding="utf-8") as ast_file:
-        print("\nnamespace Moa.AST;", file=ast_file)
-        print("\nusing Moa.Scanner;", file=ast_file)
+        print("\nnamespace Moa.TreeWalk.AST;", file=ast_file)
+        print("\nusing Moa.TreeWalk;", file=ast_file)
     
         print("\nabstract class " + base_class_name, file=ast_file)
         print("{", file=ast_file)
