@@ -141,7 +141,7 @@ class Parser
         }
         _consume(TokenType.SEMICOLON, "Expect ';' after loop condition");
 
-        Expression incrementer = null;
+        Expression? incrementer = null;
 
         if (!_match(TokenType.RIGHT_PAREN))
         {
