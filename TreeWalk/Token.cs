@@ -4,8 +4,8 @@ namespace Moa.TreeWalk;
 class Token(TokenType type, String lexeme, Object? literal, int line)
 {
     public TokenType type = type;
-    public String lexeme = lexeme;
-    public Object? literal = literal;
+    public string lexeme = lexeme;
+    public object? literal = literal;
 
     public int line = line;
 }

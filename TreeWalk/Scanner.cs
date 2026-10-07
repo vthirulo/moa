@@ -5,16 +5,16 @@ using Moa.TreeWalk.Utils.Errors;
 
 class Scanner
 {
-    private String source;
-    private List<Token> tokens = new List<Token>();
-    private static Dictionary<String, TokenType> keywords;
+    private readonly string _source;
+    private readonly List<Token> _tokens = [];
+    private static readonly Dictionary<string, TokenType> _keywords;
 
     private int start, current;
     private int line;
 
     static Scanner()
     {
-        keywords = new Dictionary<string, TokenType>
+        _keywords = new Dictionary<string, TokenType>
             {
                 { "and",    TokenType.AND },
                 { "or",     TokenType.OR },
@@ -35,7 +35,7 @@ class Scanner
 
     public Scanner(String source)
     {
-        this.source = source;
+        this._source = source;
 
         start = current = 0;
         line = 1;
@@ -49,8 +49,8 @@ class Scanner
             this.scanToken();
         }
 
-        tokens.Add(new Token(TokenType.EOF, "", null, line));
-        return tokens;
+        _tokens.Add(new Token(TokenType.EOF, "", null, line));
+        return _tokens;
     }
 
 
@@ -134,22 +134,22 @@ class Scanner
         }
     }
 
-    private bool isAtEnd() => current >= source.Length;
+    private bool isAtEnd() => current >= _source.Length;
 
-    private char advance() => source[current++];
+    private char advance() => _source[current++];
 
     private void addToken(TokenType type) => addToken(type, null);
 
     private void addToken(TokenType type, Object? literal)
     {
-        string lexeme = source.Substring(start, current - start);
-        tokens.Add(new Token(type, lexeme, literal, line));
+        string lexeme = _source.Substring(start, current - start);
+        _tokens.Add(new Token(type, lexeme, literal, line));
     }
 
     private bool match(char expected)
     {
         if (isAtEnd()) return false;
-        if (source[current] != expected) return false;
+        if (_source[current] != expected) return false;
 
         current++;
         return true;
@@ -158,13 +158,13 @@ class Scanner
     private char peek()
     {
         if (isAtEnd()) return '\0';
-        return source[current];
+        return _source[current];
     }
 
     private char peekNext()
     {
-        if (current + 1 >= source.Length) return '\0';
-        return source[current + 1];
+        if (current + 1 >= _source.Length) return '\0';
+        return _source[current + 1];
     }
 
     private void stringLiteral()
@@ -185,7 +185,7 @@ class Scanner
         advance();
 
         int literal_length = current - start; // includes " and the char after "
-        addToken(TokenType.STRING, source.Substring(start + 1, literal_length - 2));
+        addToken(TokenType.STRING, _source.Substring(start + 1, literal_length - 2));
     }
 
     private bool isDigit(char c) => c >= '0' && c <= '9';
@@ -201,7 +201,7 @@ class Scanner
         }
 
         int literal_length = current - start; // includes " and the char after "
-        addToken(TokenType.NUMBER, Double.Parse(source.Substring(start, literal_length)));
+        addToken(TokenType.NUMBER, Double.Parse(_source.Substring(start, literal_length)));
     }
 
     private bool isAlpha(char c) =>
@@ -215,11 +215,11 @@ class Scanner
     {
         while (isAlphaNumeric(peek())) advance();
 
-        String identifier = source.Substring(start, current - start);
+        String identifier = _source.Substring(start, current - start);
 
         TokenType identifier_type;
 
-        if (!keywords.TryGetValue(identifier, out identifier_type))
+        if (!_keywords.TryGetValue(identifier, out identifier_type))
         {
             identifier_type = TokenType.IDENTIFIER;
         }

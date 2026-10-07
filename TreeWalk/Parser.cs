@@ -69,6 +69,10 @@ class Parser
     {
         if (_match(TokenType.IF)) return _ifStatement();
 
+        if (_match(TokenType.WHILE)) return _whileStatement();
+
+        if (_match(TokenType.FOR)) return _forStatement();
+
         if (_match(TokenType.PRINT)) return _printStatement();
 
         if (_match(TokenType.LEFT_BRACE)) return new Block(_block());
@@ -106,6 +110,69 @@ class Parser
         }
 
         return new IfStmt(condition, thenBranch, elseBranch);
+    }
+
+    private Statement _whileStatement()
+    {
+        _consume(TokenType.LEFT_PAREN, "Expect '(' after while keyword");
+        Expression condition = _expression();
+        _consume(TokenType.RIGHT_PAREN, "Expect ')' after while condition");
+
+        Statement while_body = _statement();
+
+        return new WhileStmt(condition, while_body);
+    }
+
+    private Statement _forStatement()
+    {
+        _consume(TokenType.LEFT_PAREN, "Expect '(' after for keyword");
+
+        Statement? initializer;
+
+        if (_match(TokenType.SEMICOLON)) initializer = null;
+        else if (_match(TokenType.VAR)) initializer = _varDeclaration();
+        else initializer = _expressionStatement();
+
+        Expression? condition = null;
+
+        if (!_match(TokenType.SEMICOLON))
+        {
+            condition = _expression();
+        }
+        _consume(TokenType.SEMICOLON, "Expect ';' after loop condition");
+
+        Expression incrementer = null;
+
+        if (!_match(TokenType.RIGHT_PAREN))
+        {
+            incrementer = _expression();
+        }
+
+        _consume(TokenType.RIGHT_PAREN, "Expect ')' after for component");
+
+        Statement for_body = _statement();
+
+        if (incrementer is not null)
+        {
+            for_body = new Block([
+                for_body,
+                new ExpressionStmt(incrementer)
+            ]);
+        }
+
+        condition ??= new Literal(true);
+
+        for_body = new WhileStmt(condition, for_body);
+
+        if (initializer is not null)
+        {
+            for_body = new Block([
+                initializer,
+                for_body
+            ]);
+        }
+
+        return for_body;
     }
 
     private Statement _printStatement()

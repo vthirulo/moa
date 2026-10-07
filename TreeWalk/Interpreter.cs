@@ -43,6 +43,16 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         return null;
     }
 
+    public object? VisitWhileStmtStatement(WhileStmt whileStmt)
+    {
+        while (_isTruthness(_evaluate(whileStmt.Condition)))
+        {
+            _execute(whileStmt.Body);
+        }
+
+        return null;
+    }
+
     public object? VisitExpressionStmtStatement(ExpressionStmt expr)
     {
         _evaluate(expr.Expr);

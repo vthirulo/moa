@@ -9,8 +9,15 @@ program        -> declaration* EOF ;
 declaration    -> varDeclaration | statement ;
 varDeclaration -> "var" IDENTIFIER ( "=" expression )? ";" ;
 
-statement      -> exprStatement | printStatement | block | ifStatement ;
+statement      -> exprStatement | printStatement | block | 
+    ifStatement | whileStatement | forStatement ;
 ifStatement    -> "if" "(" expression ")" statement ("else" statement )? ;
+whileStatement -> "while" "(" expression ")" statement ;
+forStatement   -> "for" "(" 
+    (varDeclaration | exprStatement | ";") 
+    expression? ";" 
+    expression? ")" statement 
+;
 block          -> "{" declaration* "}" ;
 exprStatement  -> expression ";" ;
 printStatement -> "print" expression ";" ;

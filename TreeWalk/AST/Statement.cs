@@ -9,6 +9,7 @@ abstract class Statement
 	{
 		R VisitBlockStatement(Block expr);
 		R VisitIfStmtStatement(IfStmt expr);
+		R VisitWhileStmtStatement(WhileStmt expr);
 		R VisitExpressionStmtStatement(ExpressionStmt expr);
 		R VisitPrintStmtStatement(PrintStmt expr);
 		R VisitVarStmtStatement(VarStmt expr);
@@ -49,6 +50,24 @@ class IfStmt : Statement
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitIfStmtStatement(this);
+	}
+}
+
+
+class WhileStmt : Statement
+{
+	public Expression Condition;
+	public Statement Body;
+
+	public WhileStmt(Expression Condition, Statement Body)
+	{
+		this.Condition = Condition;
+		this.Body = Body;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitWhileStmtStatement(this);
 	}
 }
 

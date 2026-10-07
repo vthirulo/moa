@@ -74,6 +74,7 @@ else:
     DefineAST(output_dir, "Statement", [
         "Block             : List<Statement> Statements",
         "IfStmt            : Expression Condition, Statement ThenBranch, Statement? ElseBranch",
+        "WhileStmt         : Expression Condition, Statement Body",
         "ExpressionStmt    : Expression Expr",
         "PrintStmt         : Expression Expr",
         "VarStmt           : Token Name, Expression? Initializer"
