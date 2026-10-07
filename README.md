@@ -4,4 +4,4 @@ Interpreter written in C# for the moa programming language based on the lox lang
 
 ## Useful Docs
 
-Get to know about moa - [language basics](Docs/language.md)
+Get to know about moa - [language basics](Docs/Language.md)
