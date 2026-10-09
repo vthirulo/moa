@@ -1,0 +1,35 @@
+
+name: MOA Build and Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [
+          windows-latest, windows-2022, 
+          ubuntu-latest, ubuntu-22.04,
+          macos-latest, macos-26-intel
+        ]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: .github
+    steps:
+      - uses: actions/checkout@v4
+      - name: dotnet 8.0 setup
+        uses: actions/setup-dotnet@v4
+        with: 
+          dotnet-version: 8.0.x
+      - name: restore dependencies
+        run: dotnet restore ../moa.csproj
+      - name: build moa without restoring
+        run: dotnet build ../moa.csproj --no-restore
+      - name: testing moa without building and restoring again
+        run: dotnet test ../moa.csproj --no-build --verbosity quiet
+      
