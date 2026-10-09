@@ -40,6 +40,28 @@ public class ScannerTest
     }
 
     [Theory]
+    [InlineData("!=", MoaTokenType.BANG_EQUAL)]
+    [InlineData("==", MoaTokenType.EQUAL_EQUAL)]
+    [InlineData(">=", MoaTokenType.GREATER_EQUAL)]
+    [InlineData("<=", MoaTokenType.LESS_EQUAL)]
+    public void DoubleCharacterTest(string test_string, MoaTokenType expected_type)
+    {
+        _scanner = new(test_string);
+
+        var _tokens = _scanner.ScanTokens();
+
+        Assert.Equal(2, _tokens.Count);
+        Assert.Equal(2, _tokens[0].lexeme.Length);
+
+        Assert.Multiple(
+            () => Assert.Equal(test_string[0], _tokens[0].lexeme[0]),
+            () => Assert.Equal(test_string[1], _tokens[0].lexeme[1]),
+            () => Assert.Equal(expected_type, _tokens[0].type),
+            () => Assert.Equal(MoaTokenType.EOF, _tokens[1].type)
+        );
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData("    ")]
     public void Whitespace(string test_whitespace)
