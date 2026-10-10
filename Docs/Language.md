@@ -1,153 +1,85 @@
+#### Status: draft
+**Covered:** numbers, truthiness, variables, concatenation, control flow. 
+**Not yet covered:** arithmetic and comparison operators, logical operators, functions, errors. Behavior in unlisted sections is undefined until specified.
+### Numbers
 
-# moa language basics
+we declare numbers using the `var` keyword, and we can represent numbers as integers, and decimal formats such as 10, 1.5, 3, 4.6, and so on. Even the variable can hold expressions that evaluates to a single value such as `var expr = (1/2) * 4; print expr; // 2`
+- Numbers prints in plain decimal notation and never in exponent form.
+- Whole numbers print without any decimal points.
 
-### Data Types
+| Input                              | Expected output             |
+| ---------------------------------- | --------------------------- |
+| `print 8;`                         | `8`                         |
+| `print 22.5;`                      | `22.5`                      |
+| `print 0.000001;`                  | `0.000001`                  |
+| `print 1000000000000000;`          | `1000000000000000`          |
+| `print 1 / 3;`                     | `0.3333333333333333`        |
+| `print 0.1 + 0.2;`                 | `0.30000000000000004`       |
+| `print 0.00000000000000000000001;` | `0.00000000000000000000001` |
 
-we have booleans - true or false, numbers which represents integers and floating-point numbers, string literal enclosed with double quotes, and finally `null` which means "no value"
+Note that internally, the number value is defined as `Double` in implementation language.
+### Truthness
+
+Values such as `0`, `false`, `null` and empty string `""` are considered false and everything other than that are considered true. We can perform logical operations on them:
 ```C
-true;
-false;
-
-13;
-13.05;
-
-"Hello World";
-"Compilers";
-""; // empty string
-"13.05"; // it's string
+not 0
+not false
+not null
+not ""
 ```
-> [!NOTE]
-> number types are stored as double-precision floating-point number. So `a = 32` is not an int type, hence we can do this
-> ```C
-> var a = 32;
-> var b = 0.5;
-> var c = a + b; // this is valid - c stores it as 32.5
-> ```
-
-### Expressions
-
-#### Arithmetic Operators
-
-moa supports addition, subtraction, multiplication and divison for numbers only, but you can use addition symbol 
-- to concatenate two or more strings into one
-- to print other types as a strings
-
-```C
-
-var a = 10;
-var b = 5;
-var c = 0;
-
-c = a + b; // 15
-c = a - b; // 5
-c = a * b; // 50
-c = a / b; // 2
-
-var d = "Pineapple ";
-var e = "Honey";
-var f = "";
-
-f = d + " and " + e; // "Pineapple  and Honey"
-```
-
-#### Comparison and Equality Operators
-
-moa supports less than, less than or equal, greater than, greater than or equal, equality and inequality operators - where they return boolean results
-
-```C
-a < b;   // false 
-a <= a;  // true 
-a > b;   // true
-b >= a;  // false 
-
-a == b;  // false
-a != b;  // true
-```
-
-#### Logical Operators
-
-moa supports logical `not`, logical `and`, and then logical `or` operators, where logical `not` requires one operand and is always a prefix
-
-```C
-not a  // false
-not 0  // true
-
-true and false  // false
-true and true   // true
-
-false or true   // true
-false or false  // false
-```
+all the above evaluates to true, where `not "true"` evaluates to false - you get the idea.
 ### Variables
 
-you can create a variable using the `var` and assign it any value. By default, variable holds `null` value if the variable declared is not assigned a value by the user
-
+We can declare a variable of any types using the `var` keyword and the type of variable depends on the value it contains, as Moa language supports number, booleans, null and string type so far 
 ```C
-var count = 0;  // number type
-var fvalue = 3.4;  // number type
-var temp; // null
-var name = "moa language";  // string type
+var a = 10, b = 10.5;
+var c = a + b;
+var d = "Moa Language", e = 100;
+var f, g;
 ```
+as you can see multiple variables of different types can be declared and assigned, where assignment operation can be optional. 
+- Uninitialized variables doesn't contain `null` unless explicitly assigned `null` to the variable.
+- Assigning a value to undeclared variable is considered an error
+- Printing or accessing an uninitialized variable is considered an error unless explicitly assigned `null` to the variable.
 
-> [!NOTE]
-> A variable must be declared with `var` before use. Assigning any value to an undeclared name (without var) is an error.
+### Concatenation
+
+an operand of number type is implicitly converted to a string if and only if another operand is a string and the operator used is `+` which is usually called a concatenation operator.
+```C
+var a = 19;
+var str = a + " is an integer";
+print str;
+a = a + 10;
+print "a value is updated, a now contains " + a;
+```
 
 ### Control Flow
 
 control flow determines the order in which statements execute - allowing a program to execute a block of code, repeat it or skip it based on a condition we define
-
 ```C
+var count = 3;
 if (count < 5)
 {
-  print count + "is less than 5";
+	print count + " is less than 5";
 }
 else {
-  print count + "is greater than 5";
+	print count + " is greater than 5";
 }
 ```
-a `while` loop executes the body repeatedly as long as the condition expression is true
 
+a `while` loop executes the body repeatedly as long as the condition expression is true
 ```C
 var count = 0;
 
-while (count < 5)
-{
-  print "value of count var: " + count;
-  count = count + 1; 
+while (count < 5) {
+	print "value of count var: " + count;
+	count = count + 1;
 }
 ```
 
 we have the classic `for` loop as seen in C like lanuguages
-
 ```C
-for (var count = 1; count <= 5; count = count + 1)
-{
-  print "value of count var: " + count;
-} 
-```
-
-### Functions
-
-use the `func` keyword to define a function in moa language, moa doesn't describe between declaration and definition like C language.
-
-```C
-func incrementor (x)
-{
-  x = x + 1;
-  return x;
+for (var count = 1; count <= 5; count = count + 1) {
+	print "value of count var: " + count;
 }
 ```
-In the above code, `x` is called the formal parameter. Now here is how we can call the above function
-
-```C
-incrementor(3);  // valid, but return value wasted
-
-print incrementor(3);  // prints 4
-
-var val = incrementor(3);  // variable named 'val' holds the value 4
-
-incrementor();  // error 
-```
-
-When calling a function, the caller provides the values the function expects — these are called arguments (or actual parameters), since they're the actual values passed at the point of the call.
-
