@@ -12,6 +12,7 @@ abstract class Expression
 		R VisitUnaryExpression(Unary expr);
 		R VisitLogicalExpression(Logical expr);
 		R VisitBinaryExpression(Binary expr);
+		R VisitCallExpression(Call expr);
 		R VisitGroupingExpression(Grouping expr);
 		R VisitLiteralExpression(Literal expr);
 		R VisitVariableExpression(Variable expr);
@@ -108,6 +109,26 @@ class Binary : Expression
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitBinaryExpression(this);
+	}
+}
+
+
+class Call : Expression
+{
+	public Expression Calle;
+	public Token Paren;
+	public List<Expression> arguments;
+
+	public Call(Expression Calle, Token Paren, List<Expression> arguments)
+	{
+		this.Calle = Calle;
+		this.Paren = Paren;
+		this.arguments = arguments;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitCallExpression(this);
 	}
 }
 

@@ -62,4 +62,9 @@ class AstPrinter : Expression.IVisitor<String>
     {
         throw new NotImplementedException();
     }
+
+    public string VisitCallExpression(Call expr)
+    {
+        throw new NotImplementedException();
+    }
 }

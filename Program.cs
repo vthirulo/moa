@@ -54,7 +54,9 @@ public class Program
 
         if (Error.Status) Environment.Exit(65);
 
-        MoaInterpreter interpreter = new(lst_of_statements);
+        MoaInterpreter interpreter = new();
+
+        interpreter.interpret(lst_of_statements);
 
         if (Error.RuntimeStatus) Environment.Exit(70);
     }

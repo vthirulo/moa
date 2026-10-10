@@ -6,9 +6,38 @@ using Moa.TreeWalk.Utils.Errors;
 
 class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 {
-    private Environment _env = new();
+    internal Environment _globals;
+    private Environment _env;
 
-    public Interpreter(List<Statement> statements)
+    class ClockFunction : MoaCallable
+    {
+        public int arity() => 0;
+
+        public string callToString()
+        {
+            return "native function <clock>";
+        }
+
+        public object? call(Interpreter interpreter, List<object?> arguments)
+        {
+            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
+        }
+    };
+
+    class Return(object? retvalue) : SystemException(null, null)
+    {
+        public object? value = retvalue;
+    }
+
+    public Interpreter()
+    {
+        _globals = new();
+        _env = _globals;
+
+        _globals.Define("clock", new ClockFunction());
+    }
+
+    public void interpret(List<Statement> statements)
     {
         try
         {
@@ -79,6 +108,23 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         return value;
     }
 
+    public object? VisitFuncStmtStatement(FuncStmt stmt)
+    {
+        MoaFunction function = new(stmt, _env);
+
+        _env.Define(stmt.Name.lexeme, function);
+
+        return null;
+    }
+
+    public object? VisitReturnStmtStatement(ReturnStmt stmt)
+    {
+        object? value = null;
+        if (stmt.Value is not null) value = _evaluate(stmt.Value);
+
+        throw new Return(value);
+    }
+
     public object? VisitVariableExpression(Variable expr) => _env.Get(expr.Name);
 
     public object? VisitLiteralExpression(Literal expr) => expr.Value;
@@ -122,6 +168,33 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         }
 
         return null;
+    }
+
+    public object? VisitCallExpression(Call expr)
+    {
+        object calle = _evaluate(expr.Calle)!;
+
+        List<object?> arguments = [];
+        foreach (Expression single_arg in expr.arguments)
+        {
+            arguments.Add(_evaluate(single_arg));
+        }
+
+        if (calle is not MoaCallable)
+        {
+            throw new RuntimeException(expr.Paren, "Can only call functions and classes");
+        }
+
+        MoaCallable function = (MoaCallable)calle;
+
+        if (arguments.Count != function.arity())
+        {
+            throw new RuntimeException(
+                expr.Paren, "Expected " + function.arity() + " arguments but got " + arguments.Count + "."
+            );
+        }
+
+        return function.call(this, arguments);
     }
 
     public object? VisitBinaryExpression(Binary expr)
@@ -180,7 +253,7 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         throw new NotImplementedException();
     }
 
-    private void _executeBlock(List<Statement> statements, Environment environment)
+    internal void _executeBlock(List<Statement> statements, Environment environment)
     {
         Environment _previous = this._env;
 

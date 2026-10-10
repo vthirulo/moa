@@ -13,6 +13,8 @@ abstract class Statement
 		R VisitExpressionStmtStatement(ExpressionStmt expr);
 		R VisitPrintStmtStatement(PrintStmt expr);
 		R VisitVarStmtStatement(VarStmt expr);
+		R VisitFuncStmtStatement(FuncStmt expr);
+		R VisitReturnStmtStatement(ReturnStmt expr);
 	}
 	public abstract R Accept<R>(IVisitor<R> visitor);
 }
@@ -118,5 +120,43 @@ class VarStmt : Statement
 	public override R Accept<R>(IVisitor<R> visitor)
 	{
 		return visitor.VisitVarStmtStatement(this);
+	}
+}
+
+
+class FuncStmt : Statement
+{
+	public Token Name;
+	public List<Token> Params;
+	public List<Statement> FuncBody;
+
+	public FuncStmt(Token Name, List<Token> Params, List<Statement> FuncBody)
+	{
+		this.Name = Name;
+		this.Params = Params;
+		this.FuncBody = FuncBody;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitFuncStmtStatement(this);
+	}
+}
+
+
+class ReturnStmt : Statement
+{
+	public Token Keyword;
+	public Expression? Value;
+
+	public ReturnStmt(Token Keyword, Expression? Value)
+	{
+		this.Keyword = Keyword;
+		this.Value = Value;
+	}
+
+	public override R Accept<R>(IVisitor<R> visitor)
+	{
+		return visitor.VisitReturnStmtStatement(this);
 	}
 }
