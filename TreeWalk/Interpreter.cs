@@ -24,11 +24,6 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         }
     };
 
-    class Return(object? retvalue) : SystemException(null, null)
-    {
-        public object? value = retvalue;
-    }
-
     public Interpreter()
     {
         _globals = new();
