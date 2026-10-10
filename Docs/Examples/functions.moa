@@ -1,0 +1,16 @@
+
+
+func incrementor (x)
+{
+  x = x + 1;
+  return x;
+}
+
+
+incrementor(3);  // valid, but return value wasted
+
+print incrementor(3);  // prints 4
+
+var val = incrementor(3);  // variable named 'val' holds the value 4
+
+print val;
