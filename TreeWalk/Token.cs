@@ -14,7 +14,7 @@ class Token(TokenType type, String lexeme, Object? literal, int line)
 public enum TokenType
 {
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-    COMMA, DOT, MINUS, PLUS, SLASH, STAR, SEMICOLON,
+    COMMA, DOT, MINUS, PLUS, SLASH, PERC, STAR, SEMICOLON,
 
     BANG, BANG_EQUAL,
     EQUAL, EQUAL_EQUAL,

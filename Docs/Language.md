@@ -3,21 +3,13 @@
 **Not yet covered:** arithmetic and comparison operators, logical operators, functions, errors. Behavior in unlisted sections is undefined until specified.
 ### Numbers
 
-we declare numbers using the `var` keyword, and we can represent numbers as integers, and decimal formats such as 10, 1.5, 3, 4.6, and so on. Even the variable can hold expressions that evaluates to a single value such as `var expr = (1/2) * 4; print expr; // 2`
-- Numbers prints in plain decimal notation and never in exponent form.
-- Whole numbers print without any decimal points.
+we declare numbers using the `var` keyword, and we can represent numbers as integers only with no decimal support. Even the variable can hold expressions that evaluates to a single value such as ```
+```C
+var a = (1/2) * 4; 
+print a; 
+```
 
-| Input                              | Expected output             |
-| ---------------------------------- | --------------------------- |
-| `print 8;`                         | `8`                         |
-| `print 22.5;`                      | `22.5`                      |
-| `print 0.000001;`                  | `0.000001`                  |
-| `print 1000000000000000;`          | `1000000000000000`          |
-| `print 1 / 3;`                     | `0.3333333333333333`        |
-| `print 0.1 + 0.2;`                 | `0.30000000000000004`       |
-| `print 0.00000000000000000000001;` | `0.00000000000000000000001` |
-
-Note that internally, the number value is defined as `Double` in implementation language.
+storing or resulting floating point values are converted to integer type resulting in rounding off to the nearest number instead of truncation. 
 ### Truthness
 
 Values such as `0`, `false`, `null` and empty string `""` are considered false and everything other than that are considered true. We can perform logical operations on them:
@@ -32,7 +24,7 @@ all the above evaluates to true, where `not "true"` evaluates to false - you get
 
 We can declare a variable of any types using the `var` keyword and the type of variable depends on the value it contains, as Moa language supports number, booleans, null and string type so far 
 ```C
-var a = 10, b = 10.5;
+var a = 10, b = 10;
 var c = a + b;
 var d = "Moa Language", e = 100;
 var f, g;

@@ -70,6 +70,7 @@ class Scanner
             case '+': addToken(TokenType.PLUS); break;
             case '*': addToken(TokenType.STAR); break;
             case ';': addToken(TokenType.SEMICOLON); break;
+            case '%': addToken(TokenType.PERC); break;
 
             case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
             case '=': addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
@@ -201,7 +202,8 @@ class Scanner
         }
 
         int literal_length = current - start; // includes " and the char after "
-        addToken(TokenType.NUMBER, Double.Parse(_source.Substring(start, literal_length)));
+        int number = Convert.ToInt32(double.Parse(_source.Substring(start, literal_length)));
+        addToken(TokenType.NUMBER, number);
     }
 
     private bool isAlpha(char c) =>

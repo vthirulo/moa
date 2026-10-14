@@ -159,7 +159,7 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
                 return right == null ? null : !_isTruthness(right);
             case TokenType.MINUS:
                 _checkOperandNumber(expr.Operator, right);
-                return right == null ? null : -(double)right;
+                return right == null ? null : -(int)right;
         }
 
         return null;
@@ -204,35 +204,39 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
                 {
                     return vleft + vright;
                 }
-                else if (left is double && right is double)
+                else if (left is int && right is int)
                 {
                     _checkOperandsNumber(expr.Operator, left, right);
-                    return (left == null || right == null) ? null : (double)left + (double)right;
+                    return (left == null || right == null) ? null : (int)left + (int)right;
                 }
 
                 throw new RuntimeException(expr.Operator, "Operands must be two numbers or two strings !");
             case TokenType.MINUS:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left - (double)right;
-            case TokenType.SLASH:
+                return (left == null || right == null) ? null : (int)left - (int)right;
+            case TokenType.PERC:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left / (double)right;
+                return (left == null || right == null) ? null : (int)left % (int)right;
+            case TokenType.SLASH:
+                _checkDivisionByZero(expr.Operator, right);
+                _checkOperandsNumber(expr.Operator, left, right);
+                return (left == null || right == null) ? null : (int)left / (int)right;
             case TokenType.STAR:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left * (double)right;
+                return (left == null || right == null) ? null : (int)left * (int)right;
 
             case TokenType.GREATER:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left > (double)right;
+                return (left == null || right == null) ? null : (int)left > (int)right;
             case TokenType.GREATER_EQUAL:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left >= (double)right;
+                return (left == null || right == null) ? null : (int)left >= (int)right;
             case TokenType.LESS:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left < (double)right;
+                return (left == null || right == null) ? null : (int)left < (int)right;
             case TokenType.LESS_EQUAL:
                 _checkOperandsNumber(expr.Operator, left, right);
-                return (left == null || right == null) ? null : (double)left <= (double)right;
+                return (left == null || right == null) ? null : (int)left <= (int)right;
 
             case TokenType.BANG_EQUAL:
                 return !_isEqual(left, right);
@@ -289,29 +293,34 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 
     private void _checkOperandNumber(Token @operator, object? operand)
     {
-        if (operand is double) return;
+        if (operand is int) return;
 
         throw new RuntimeException(@operator, "Operand must be a number !");
     }
 
     private void _checkOperandsNumber(Token @operator, object? left, object? right)
     {
-        if (left is double && right is double) return;
+        if (left is int && right is int) return;
 
         throw new RuntimeException(@operator, "Operands must be a number !");
+    }
+
+    private void _checkDivisionByZero(Token @operator, object? divisor)
+    {
+        if (divisor is not 0) return;
+
+        throw new RuntimeException(@operator, "Division by zero not allowed !");
     }
 
     private string? _value_to_string_conv(object? value)
     {
         if (value == null) return "null";
 
-        if (value is double)
+        if (value is int number)
         {
-            string text = value.ToString() ?? "null";
+            string number_instr = number.ToString();
 
-            if (text.EndsWith(".0")) text = text.Substring(0, text.Length - 2);
-
-            return text;
+            return number_instr;
         }
 
         return value.ToString();

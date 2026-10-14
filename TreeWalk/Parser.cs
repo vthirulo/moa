@@ -344,7 +344,7 @@ class Parser
     {
         Expression expr = _factor();
 
-        while (_match(TokenType.PLUS, TokenType.MINUS))
+        while (_match(TokenType.PLUS, TokenType.MINUS, TokenType.PERC))
         {
             Token @operator = _previous();
             Expression right = _factor();
