@@ -1,6 +1,7 @@
 
 namespace Moa.TreeWalk;
 
+using System.Reflection.Metadata.Ecma335;
 using Moa.TreeWalk.AST;
 using Moa.TreeWalk.Utils.Errors;
 
@@ -8,6 +9,8 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 {
     internal Environment _globals;
     private Environment _env;
+
+    private Dictionary<Expression, int> _locals;
 
     class ClockFunction : MoaCallable
     {
@@ -27,6 +30,7 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
     public Interpreter()
     {
         _globals = new();
+        _locals = new();
         _env = _globals;
 
         _globals.Define("clock", new ClockFunction());
@@ -129,7 +133,10 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
     public object? VisitAssignExpression(Assign expr)
     {
         object? value = _evaluate(expr.Value);
-        _env.Assign(expr.Name, value);
+
+        if (_locals.ContainsKey(expr)) _env.AssignAt(_locals[expr], expr.Name, value);
+        else _globals.Assign(expr.Name, value);
+
         return value;
     }
 
@@ -325,5 +332,11 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 
         return value.ToString();
     }
+
+    internal void resolve(Expression expr, int depth) => _locals[expr] = depth;
+
+    private object? _lookupVariable(Token name, Expression expr) => _locals.ContainsKey(
+        expr
+    ) ? _env.GetAt(_locals[expr], name.lexeme) : _globals.Get(name);
 
 }

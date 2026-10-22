@@ -34,6 +34,10 @@ class Environment
         throw new RuntimeException(name, "Undefined variable '" + name.lexeme + "'");
     }
 
+    public void AssignAt(int distance, Token name, object? value) => _ancestor(
+        distance
+    )._values[name.lexeme] = value;
+
     public object? Get(Token name)
     {
         if (_values.ContainsKey(name.lexeme))
@@ -48,6 +52,19 @@ class Environment
         if (_enclosing is not null) return _enclosing.Get(name);
 
         throw new RuntimeException(name, "Undefined variable '" + name.lexeme + "'");
+    }
+
+    public object? GetAt(int distance, string name) => _ancestor(distance)._values[name];
+
+    private Environment _ancestor(int distance)
+    {
+        Environment environment = this;
+
+        for (int i = 0; i < distance; ++i)
+        {
+            environment = environment._enclosing!;
+        }
+        return environment;
     }
 
 }

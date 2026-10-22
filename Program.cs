@@ -5,6 +5,7 @@ using Moa.TreeWalk.Utils.Errors;
 using MoaScanner = Moa.TreeWalk.Scanner;
 using MoaParser = Moa.TreeWalk.Parser;
 using MoaInterpreter = Moa.TreeWalk.Interpreter;
+using System.Reflection.Metadata;
 
 public class Program
 {
@@ -54,7 +55,12 @@ public class Program
 
         if (Error.Status) Environment.Exit(65);
 
+
         MoaInterpreter interpreter = new();
+
+        Resolver resolver = new(interpreter);
+
+        resolver.resolve(lst_of_statements);
 
         interpreter.interpret(lst_of_statements);
 
