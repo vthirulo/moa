@@ -9,10 +9,12 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
     private MoaInterpreter _interpreter = interpreter;
     private Stack<Dictionary<string, bool>> _scopes = new();
 
+    private FunctionType _currentFunction = FunctionType.NONE;
+
     public object? VisitBlockStatement(Block expr)
     {
         _beginScope();
-        resolve(expr.Statements);
+        _resolve(expr.Statements);
         _endScope();
 
         return null;
@@ -22,7 +24,7 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
     private void _endScope() => _scopes.Pop();
 
-    public void resolve(List<Statement> statements)
+    public void _resolve(List<Statement> statements)
     {
         foreach (Statement stmt in statements)
         {
@@ -57,6 +59,11 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
         Dictionary<string, bool> scope = _scopes.Peek();
 
+        if (scope.ContainsKey(varName.lexeme))
+        {
+            Error.Report(varName.line, "Redeclaring variable '" + varName.lexeme + "' is not allowed !");
+        }
+
         scope[varName.lexeme] = false;
     }
 
@@ -69,9 +76,11 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
     public object? VisitVariableExpression(Variable expr)
     {
-        if (_scopes.Count is not 0 && _scopes.Peek()[expr.Name.lexeme] == false)
+        if (_scopes.Count is not 0)
         {
-            Error.Report(expr.Name.line, "Can't read local variable in its own initializer");
+            if (_scopes.Peek().TryGetValue(expr.Name.lexeme, out bool val) && val == false) Error.Report(
+                expr.Name.line, "Can't read local variable in its own initializer"
+            );
         }
 
         _resolveLocal(expr, expr.Name);
@@ -80,7 +89,7 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
     public object? VisitAssignExpression(Assign expr)
     {
-        _resolve(expr);
+        _resolve(expr.Value);
         _resolveLocal(expr, expr.Name);
         return null;
     }
@@ -90,25 +99,28 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
         _declare(stmt.Name);
         _define(stmt.Name);
 
-        _resolveFunction(stmt);
+        _resolveFunction(stmt, FunctionType.FUNCTION);
         return null;
     }
 
     private void _resolveLocal(Expression varExpr, Token varName)
     {
-        for (int i = _scopes.Count - 1; 0 <= i; --i)
+        for (int i = 0; i < _scopes.Count; ++i)
         {
             if (_scopes.ElementAt(i).ContainsKey(varName.lexeme))
             {
-                _interpreter.resolve(varExpr, _scopes.Count - 1 - i);
+                _interpreter.resolve(varExpr, i);
                 return;
             }
         }
 
     }
 
-    private void _resolveFunction(FuncStmt stmt)
+    private void _resolveFunction(FuncStmt stmt, FunctionType functionType)
     {
+        FunctionType enclosingFunction = _currentFunction;
+        _currentFunction = functionType;
+
         _beginScope();
 
         foreach (Token parameter in stmt.Params)
@@ -116,8 +128,10 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
             _declare(parameter);
             _define(parameter);
         }
-        resolve(stmt.FuncBody);
+        _resolve(stmt.FuncBody);
         _endScope();
+
+        _currentFunction = enclosingFunction;
     }
 
     public object? VisitExpressionStmtStatement(ExpressionStmt exprStmt)
@@ -143,6 +157,11 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
     public object? VisitReturnStmtStatement(ReturnStmt returnStmt)
     {
+        if (_currentFunction is FunctionType.NONE)
+        {
+            Error.Report(returnStmt.Keyword.line, "Can't return from a block");
+        }
+
         if (returnStmt.Value is not null) _resolve(returnStmt.Value);
         return null;
     }
@@ -202,3 +221,8 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
     }
 
 }
+
+enum FunctionType
+{
+    NONE, FUNCTION
+};

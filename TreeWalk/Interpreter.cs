@@ -124,7 +124,7 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
         throw new Return(value);
     }
 
-    public object? VisitVariableExpression(Variable expr) => _env.Get(expr.Name);
+    public object? VisitVariableExpression(Variable expr) => _lookupVariable(expr.Name, expr);
 
     public object? VisitLiteralExpression(Literal expr) => expr.Value;
 
@@ -335,8 +335,8 @@ class Interpreter : Expression.IVisitor<Object?>, Statement.IVisitor<Object?>
 
     internal void resolve(Expression expr, int depth) => _locals[expr] = depth;
 
-    private object? _lookupVariable(Token name, Expression expr) => _locals.ContainsKey(
-        expr
-    ) ? _env.GetAt(_locals[expr], name.lexeme) : _globals.Get(name);
+    private object? _lookupVariable(Token name, Expression expr) => _locals.TryGetValue(
+        expr, out int value
+    ) ? _env.GetAt(value, name.lexeme) : _globals.Get(name);
 
 }
