@@ -9,6 +9,8 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
     private MoaInterpreter _interpreter = interpreter;
     private Stack<Dictionary<string, bool>> _scopes = new();
 
+    private Dictionary<string, bool> _globalstates = [];
+
     private FunctionType _currentFunction = FunctionType.NONE;
 
     public object? VisitBlockStatement(Block expr)
@@ -55,7 +57,15 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
     private void _declare(Token varName)
     {
-        if (_scopes.Count is 0) return;
+        if (_scopes.Count is 0)
+        {
+            if (_globalstates.ContainsKey(varName.lexeme))
+            {
+                Error.Report(varName.line, "Redeclaring global variable '" + varName.lexeme + "' is not allowed !");
+            }
+            _globalstates[varName.lexeme] = false;
+            return;
+        }
 
         Dictionary<string, bool> scope = _scopes.Peek();
 
@@ -69,7 +79,11 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
 
     private void _define(Token varName)
     {
-        if (_scopes.Count is 0) return;
+        if (_scopes.Count is 0)
+        {
+            _globalstates[varName.lexeme] = true;
+            return;
+        }
 
         _scopes.Peek()[varName.lexeme] = true;
     }
@@ -81,6 +95,13 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
             if (_scopes.Peek().TryGetValue(expr.Name.lexeme, out bool val) && val == false) Error.Report(
                 expr.Name.line, "Can't read local variable in its own initializer"
             );
+        }
+        else
+        {
+            if (_globalstates.TryGetValue(expr.Name.lexeme, out bool val) && val == false) Error.Report(
+                expr.Name.line, "Can't read global variable in its own initializer"
+            );
+            return null;
         }
 
         _resolveLocal(expr, expr.Name);
@@ -113,7 +134,6 @@ class Resolver(MoaInterpreter interpreter) : Expression.IVisitor<Object?>, State
                 return;
             }
         }
-
     }
 
     private void _resolveFunction(FuncStmt stmt, FunctionType functionType)
