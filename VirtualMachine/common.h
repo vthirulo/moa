@@ -1,9 +1,10 @@
 
-#ifndef CMOA_COMMON_H
-#define CMOA_COMMON_H
+#ifndef MOA_COMMON_H
+#define MOA_COMMON_H
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #endif
