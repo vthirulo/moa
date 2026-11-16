@@ -31,5 +31,5 @@ void free_value_array(ValueArray* array)
 
 void print_value(Value value)
 {
-    printf("%d'", value);
+    printf("%d", value);
 }

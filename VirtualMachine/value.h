@@ -2,8 +2,6 @@
 #ifndef MOA_VALUE_H
 #define MOA_VALUE_H
 
-#include "common.h"
-
 typedef int Value;
 
 typedef struct

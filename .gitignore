@@ -1,3 +1,9 @@
 
 obj
 bin
+
+build
+out
+
+.cache
+.vscode
